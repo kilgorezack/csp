@@ -643,12 +643,14 @@ class AiModal {
       this._showStep(this.stepResult);
       this._typewrite(this.resultText, recommendation);
 
-      // Wire the plan link using rule-based recommendation
-      if (parcel) {
-        const rec = recommendPlan(parcel);
-        this.resultPlanLink.href = rec.plan.anchor;
-        this.resultPlanLink.textContent = `View ${rec.plan.name}`;
-        highlightRecommendedPlan(rec.plan.id);
+      // Detect which plan Gemini named, fall back to rule-based
+      const aiPlan = this._extractPlanFromText(recommendation);
+      const rec = (parcel ? recommendPlan(parcel) : null);
+      const resolvedPlan = aiPlan || rec?.plan;
+      if (resolvedPlan) {
+        this.resultPlanLink.href = resolvedPlan.anchor;
+        this.resultPlanLink.textContent = `View ${resolvedPlan.name}`;
+        highlightRecommendedPlan(resolvedPlan.id);
       }
 
     } catch (err) {
@@ -656,6 +658,16 @@ class AiModal {
       this.errorText.textContent = `Something went wrong: ${err.message}`;
       this._showStep(this.stepError);
     }
+  }
+
+  _extractPlanFromText(text) {
+    const lower = text.toLowerCase();
+    // Check most specific first (Summit Outdoors before Summit/Peak)
+    if (lower.includes('summit outdoors')) return PLANS.outdoors;
+    if (lower.includes('ridgeline'))       return PLANS.ridgeline;
+    if (lower.includes('basecamp'))        return PLANS.basecamp;
+    if (lower.includes('peak'))            return PLANS.peak;
+    return null;
   }
 
   _typewrite(el, text, speed = 8) {
