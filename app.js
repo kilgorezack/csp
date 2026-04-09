@@ -135,8 +135,8 @@ async function loadData() {
   if (addressData && parcelData) return;
   try {
     const [aRes, pRes] = await Promise.all([
-      fetch('public/data/addresses.json'),
-      fetch('public/data/parcels.json'),
+      fetch('data/addresses.json'),
+      fetch('data/parcels.json'),
     ]);
     addressData = await aRes.json();
     parcelData  = await pRes.json();

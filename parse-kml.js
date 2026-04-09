@@ -63,7 +63,7 @@ function toAcres(area_tax) {
 // ---------------------------------------------------------------------------
 
 const KML_DIR   = path.join(__dirname, 'tmp_kml');
-const OUT_DIR   = path.join(__dirname, 'public', 'data');
+const OUT_DIR   = path.join(__dirname, 'data');
 
 // We extracted the KML earlier; use those paths
 const ADDR_KML  = '/tmp/kmz_inspect/ownership/address.kml';
