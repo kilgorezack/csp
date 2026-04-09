@@ -43,7 +43,7 @@ Write 2-3 warm, conversational sentences recommending the best plan for this cus
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: 280, temperature: 0.75 },
+        generationConfig: { maxOutputTokens: 600, temperature: 0.75 },
       }),
     });
 
