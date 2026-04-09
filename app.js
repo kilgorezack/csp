@@ -467,10 +467,13 @@ function renderInlineResult(addressItem, parcel, rec, rawQuery) {
 // ── Plan Card Highlighting ──────────────────────────────────────────────────
 
 function highlightRecommendedPlan(planId) {
+  // Clear all previous state and restore hidden popular badges
   document.querySelectorAll('.plan-card').forEach(card => {
     card.classList.remove('plan-recommended');
     const existingBanner = card.querySelector('.plan-recommended-banner');
     if (existingBanner) existingBanner.remove();
+    const popularBadge = card.querySelector('.plan-popular-badge');
+    if (popularBadge) popularBadge.style.display = '';
   });
 
   const card = document.querySelector(`.plan-card[data-plan="${planId}"]`);
@@ -482,7 +485,11 @@ function highlightRecommendedPlan(planId) {
   banner.textContent = 'Recommended for You';
   card.insertBefore(banner, card.firstChild);
 
-  // Remove existing popular badge on Peak if another plan is recommended
+  // Hide "Most Popular" on the recommended card to prevent overlap
+  const popularBadge = card.querySelector('.plan-popular-badge');
+  if (popularBadge) popularBadge.style.display = 'none';
+
+  // Also hide it on Peak if a different plan is recommended
   if (planId !== 'peak') {
     const peakBadge = document.querySelector('.plan-card[data-plan="peak"] .plan-popular-badge');
     if (peakBadge) peakBadge.style.display = 'none';
