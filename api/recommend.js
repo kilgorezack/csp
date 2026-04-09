@@ -2,7 +2,7 @@
 // Accepts POST { address, parcel } and returns { recommendation } from Gemini
 
 const GEMINI_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -50,7 +50,7 @@ Write 2-3 warm, conversational sentences recommending the best plan for this cus
     if (!geminiRes.ok) {
       const detail = await geminiRes.text();
       console.error('Gemini API error:', detail);
-      return res.status(502).json({ error: 'AI service unavailable' });
+      return res.status(502).json({ error: `Gemini error ${geminiRes.status}: ${detail.slice(0, 200)}` });
     }
 
     const data = await geminiRes.json();
