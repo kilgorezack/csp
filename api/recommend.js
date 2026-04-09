@@ -54,9 +54,12 @@ Write 2-3 warm, conversational sentences recommending the best plan for this cus
     }
 
     const data = await geminiRes.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+    const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
 
-    if (!text) return res.status(502).json({ error: 'Empty response from AI' });
+    if (!raw) return res.status(502).json({ error: 'Empty response from AI' });
+
+    // Strip markdown bold/italic so the text reads cleanly in plain HTML
+    const text = raw.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1');
 
     return res.status(200).json({ recommendation: text });
   } catch (err) {

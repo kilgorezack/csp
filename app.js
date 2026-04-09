@@ -658,7 +658,7 @@ class AiModal {
     }
   }
 
-  _typewrite(el, text, speed = 16) {
+  _typewrite(el, text, speed = 8) {
     el.textContent = '';
     el.classList.add('typing');
     let i = 0;
