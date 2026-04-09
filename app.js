@@ -521,3 +521,157 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+// ── AI Modal ───────────────────────────────────────────────────────────────
+
+class AiModal {
+  constructor() {
+    this.modal       = document.getElementById('ai-modal');
+    if (!this.modal) return;
+
+    this.backdrop    = this.modal.querySelector('.ai-modal-backdrop');
+    this.closeBtn    = document.getElementById('ai-modal-close');
+    this.openBtn     = document.getElementById('ai-recommend-btn');
+
+    this.stepInput   = document.getElementById('ai-step-input');
+    this.stepLoading = document.getElementById('ai-step-loading');
+    this.stepResult  = document.getElementById('ai-step-result');
+    this.stepError   = document.getElementById('ai-step-error');
+
+    this.addressInput   = document.getElementById('ai-address-input');
+    this.suggestionsEl  = document.getElementById('ai-suggestions');
+    this.submitBtn      = document.getElementById('ai-submit-btn');
+    this.resultAddress  = document.getElementById('ai-result-address');
+    this.resultText     = document.getElementById('ai-result-text');
+    this.resultPlanLink = document.getElementById('ai-result-plan-link');
+    this.tryAgainBtn    = document.getElementById('ai-try-again');
+    this.errorText      = document.getElementById('ai-error-text');
+    this.retryBtn       = document.getElementById('ai-error-retry');
+
+    this._selectedItem   = null;
+    this._selectedParcel = null;
+
+    this._bind();
+    this._initSearch();
+  }
+
+  _bind() {
+    this.openBtn?.addEventListener('click', () => this.open());
+    this.closeBtn?.addEventListener('click', () => this.close());
+    this.backdrop?.addEventListener('click', () => this.close());
+    this.submitBtn?.addEventListener('click', () => this._submit());
+    this.tryAgainBtn?.addEventListener('click', () => this._reset());
+    this.retryBtn?.addEventListener('click', () => this._reset());
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !this.modal.hidden) this.close();
+    });
+  }
+
+  _initSearch() {
+    // Reuse AddressSearch; pass a dummy button object since submit is handled separately
+    const dummyBtn = { addEventListener: () => {} };
+    new AddressSearch(this.addressInput, this.suggestionsEl, dummyBtn, (item, parcel) => {
+      this._selectedItem   = item;
+      this._selectedParcel = parcel;
+      this.submitBtn.disabled = !item;
+    });
+
+    // Also enable submit once 3+ chars are typed (even without selecting a suggestion)
+    this.addressInput.addEventListener('input', () => {
+      const q = this.addressInput.value.trim();
+      if (q.length >= 3) this.submitBtn.disabled = false;
+      else { this._selectedItem = null; this.submitBtn.disabled = true; }
+    });
+  }
+
+  open() {
+    this.modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => this.addressInput?.focus(), 50);
+  }
+
+  close() {
+    this.modal.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  _showStep(stepEl) {
+    [this.stepInput, this.stepLoading, this.stepResult, this.stepError]
+      .forEach(el => { el.hidden = el !== stepEl; });
+  }
+
+  _reset() {
+    this._selectedItem   = null;
+    this._selectedParcel = null;
+    this.addressInput.value = '';
+    this.submitBtn.disabled = true;
+    this._showStep(this.stepInput);
+    this.addressInput.focus();
+  }
+
+  async _submit() {
+    await loadData();
+
+    // Use selected item or fall back to best fuzzy match
+    let item   = this._selectedItem;
+    let parcel = this._selectedParcel;
+    if (!item) {
+      const results = searchAddresses(this.addressInput.value.trim(), 1);
+      item   = results[0] || null;
+      parcel = item && parcelData ? parcelData[item.p] : null;
+    }
+
+    const address = item ? item.a : this.addressInput.value.trim();
+
+    this._showStep(this.stepLoading);
+
+    try {
+      const res = await fetch('/api/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address, parcel: parcel || null }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Error ${res.status}`);
+      }
+
+      const { recommendation } = await res.json();
+
+      this.resultAddress.textContent = address;
+      this._showStep(this.stepResult);
+      this._typewrite(this.resultText, recommendation);
+
+      // Wire the plan link using rule-based recommendation
+      if (parcel) {
+        const rec = recommendPlan(parcel);
+        this.resultPlanLink.href = rec.plan.anchor;
+        this.resultPlanLink.textContent = `View ${rec.plan.name}`;
+        highlightRecommendedPlan(rec.plan.id);
+      }
+
+    } catch (err) {
+      console.error('AI error:', err);
+      this.errorText.textContent = `Something went wrong: ${err.message}`;
+      this._showStep(this.stepError);
+    }
+  }
+
+  _typewrite(el, text, speed = 16) {
+    el.textContent = '';
+    el.classList.add('typing');
+    let i = 0;
+    const tick = () => {
+      if (i < text.length) {
+        el.textContent += text[i++];
+        setTimeout(tick, speed);
+      } else {
+        el.classList.remove('typing');
+      }
+    };
+    tick();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => new AiModal());
