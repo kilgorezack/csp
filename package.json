@@ -1,0 +1,11 @@
+{
+  "name": "summit-internet",
+  "version": "1.0.0",
+  "description": "Summit Internet — broadband service provider website for Teton County, WY",
+  "scripts": {
+    "parse-data": "node parse-kml.js",
+    "dev": "npx serve . -p 3000",
+    "start": "npx serve . -p 3000"
+  },
+  "private": true
+}

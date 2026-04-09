@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summit Internet — Connected Living for Teton County</title>
+  <meta name="description" content="Summit Internet brings whole-home connectivity to Teton County. Experience-first plans built for how you actually live — at home, outdoors, and everywhere in between." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────────────────────────────── -->
+  <header class="nav">
+    <div class="nav-inner container">
+      <a href="#" class="logo" aria-label="Summit Internet home">
+        <svg class="logo-mark" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M20 2 L38 30 H2 Z" stroke="currentColor" stroke-width="2.5" fill="none"/>
+          <path d="M20 10 L31 30 H9 Z" fill="currentColor" opacity="0.25"/>
+        </svg>
+        <span class="logo-text">Summit</span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#plans">Plans</a>
+        <a href="#why-summit">Why Summit</a>
+        <a href="#check-address">Check My Address</a>
+      </nav>
+      <a href="#check-address" class="btn btn-primary btn-sm">Get Started</a>
+    </div>
+  </header>
+
+  <!-- ── HERO ─────────────────────────────────────────────────────────────── -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-mountain hero-mountain-1"></div>
+      <div class="hero-mountain hero-mountain-2"></div>
+      <div class="hero-mountain hero-mountain-3"></div>
+      <div class="hero-glow"></div>
+    </div>
+    <div class="container hero-content">
+      <p class="hero-eyebrow">Teton County's Home Internet</p>
+      <h1 id="hero-heading" class="hero-heading">
+        Internet built for<br/>
+        <em>how you live</em>
+      </h1>
+      <p class="hero-sub">
+        No speed tiers. No tech specs. Just plans designed around your home,
+        your family, and your property — from cozy cabins to mountain estates.
+      </p>
+
+      <!-- Address Check -->
+      <div class="hero-search" id="hero-search-section">
+        <div class="search-card" role="search" aria-label="Check service at your address">
+          <label for="hero-address-input" class="search-label">Find the right plan for your home</label>
+          <div class="search-row">
+            <div class="search-input-wrap">
+              <svg class="search-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M10 11.5C11.933 11.5 13.5 9.933 13.5 8C13.5 6.067 11.933 4.5 10 4.5C8.067 4.5 6.5 6.067 6.5 8C6.5 9.933 8.067 11.5 10 11.5Z" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M10 11.5V17.5M7 15.5H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <input
+                id="hero-address-input"
+                type="text"
+                class="search-input"
+                placeholder="Enter your address…"
+                autocomplete="off"
+                aria-autocomplete="list"
+                aria-controls="address-suggestions"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+              />
+              <div id="address-suggestions" class="suggestions" role="listbox" aria-label="Address suggestions" hidden></div>
+            </div>
+            <button class="btn btn-primary btn-search" id="search-btn" type="button">
+              Check My Address
+            </button>
+          </div>
+          <p class="search-hint">We serve all of Teton County, WY</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ADDRESS RESULT ────────────────────────────────────────────────────── -->
+  <section class="result-section container" id="address-result" aria-live="polite" hidden>
+    <div class="result-card" id="result-card">
+      <!-- Populated by JS -->
+    </div>
+  </section>
+
+  <!-- ── WHY SUMMIT ──────────────────────────────────────────────────────── -->
+  <section class="why-section" id="why-summit" aria-labelledby="why-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow">The Summit Difference</p>
+        <h2 id="why-heading" class="section-heading">Internet the way it should be</h2>
+      </div>
+      <div class="pillars-grid">
+        <div class="pillar">
+          <div class="pillar-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/>
+              <path d="M16 24C16 19.6 19.6 16 24 16C28.4 16 32 19.6 32 24C32 28.4 28.4 32 24 32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M20 24C20 21.8 21.8 20 24 20C26.2 20 28 21.8 28 24C28 26.2 26.2 28 24 28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="24" cy="24" r="2" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3>Whole-Home Coverage</h3>
+          <p>Every room, every device, always connected. No dead spots, no frustrated family members, no buffering during movie night.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 36L24 12L40 36H8Z" stroke="currentColor" stroke-width="2" fill="none"/>
+              <path d="M16 28L24 16L32 28" stroke="currentColor" stroke-width="2" fill="none" opacity="0.5"/>
+              <path d="M20 24L24 18L28 24" stroke="currentColor" stroke-width="2" fill="none" opacity="0.25"/>
+            </svg>
+          </div>
+          <h3>Built for the Valley</h3>
+          <p>We've engineered our network for Teton County's unique geography — from tight Jackson neighborhoods to sprawling ranches in the flats.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="8" y="20" width="32" height="20" rx="3" stroke="currentColor" stroke-width="2"/>
+              <path d="M16 20V16C16 11.6 19.6 8 24 8C28.4 8 32 11.6 32 16V20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="24" cy="30" r="3" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3>Simple &amp; Secure</h3>
+          <p>One monthly price. No data caps. No annual contracts. Built-in security that protects every device on your network automatically.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 8C24 8 12 16 12 26C12 32.6 17.4 38 24 38C30.6 38 36 32.6 36 26C36 16 24 8 24 8Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M18 26C18 22.7 20.7 20 24 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="24" cy="26" r="2" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3>Local Support</h3>
+          <p>When you call, you reach a neighbor — not a national call center. Our team lives and works right here in the valley.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PLANS ───────────────────────────────────────────────────────────── -->
+  <section class="plans-section" id="plans" aria-labelledby="plans-heading">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow">Experience Tiers</p>
+        <h2 id="plans-heading" class="section-heading">Choose your experience</h2>
+        <p class="section-sub">Every plan includes whole-home WiFi, no contracts, and local support. Pick the experience that fits your life.</p>
+      </div>
+
+      <div class="plans-grid" id="plans-grid" role="list">
+
+        <!-- Plan 1: Basecamp -->
+        <article class="plan-card" role="listitem" data-plan="basecamp" aria-labelledby="plan-basecamp-name">
+          <div class="plan-tier-badge">Basecamp</div>
+          <div class="plan-header">
+            <h3 class="plan-name" id="plan-basecamp-name">Basecamp</h3>
+            <p class="plan-tagline">Your home, reliably connected</p>
+            <div class="plan-price">
+              <span class="price-amount">$49</span>
+              <span class="price-period">/mo</span>
+            </div>
+          </div>
+          <p class="plan-description">
+            Everything you need to stay connected at home — perfect for smaller homes, condos, and apartments. Stream, browse, and video call without a second thought.
+          </p>
+          <ul class="plan-features" aria-label="Basecamp plan features">
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Whole-home WiFi coverage
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Support for up to 8 devices
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              HD streaming &amp; video calls
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              No data caps, ever
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Local support, weekdays
+            </li>
+          </ul>
+          <div class="plan-cta">
+            <a href="#check-address" class="btn btn-outline btn-full" data-plan-link="basecamp">Get Basecamp</a>
+          </div>
+        </article>
+
+        <!-- Plan 2: Ridgeline -->
+        <article class="plan-card" role="listitem" data-plan="ridgeline" aria-labelledby="plan-ridgeline-name">
+          <div class="plan-tier-badge">Ridgeline</div>
+          <div class="plan-header">
+            <h3 class="plan-name" id="plan-ridgeline-name">Ridgeline</h3>
+            <p class="plan-tagline">Work, learn, and play — all at once</p>
+            <div class="plan-price">
+              <span class="price-amount">$79</span>
+              <span class="price-period">/mo</span>
+            </div>
+          </div>
+          <p class="plan-description">
+            Built for busy families and remote workers. Handles video calls, school, streaming, and gaming simultaneously — without anyone losing their connection.
+          </p>
+          <ul class="plan-features" aria-label="Ridgeline plan features">
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Enhanced whole-home WiFi
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Support for up to 20 devices
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              4K streaming &amp; multi-device calls
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Smart home device integration
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Built-in network security
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Priority support, 7 days
+            </li>
+          </ul>
+          <div class="plan-cta">
+            <a href="#check-address" class="btn btn-outline btn-full" data-plan-link="ridgeline">Get Ridgeline</a>
+          </div>
+        </article>
+
+        <!-- Plan 3: Peak -->
+        <article class="plan-card plan-featured" role="listitem" data-plan="peak" aria-labelledby="plan-peak-name">
+          <div class="plan-popular-badge" aria-label="Most popular">Most Popular</div>
+          <div class="plan-tier-badge">Peak</div>
+          <div class="plan-header">
+            <h3 class="plan-name" id="plan-peak-name">Peak</h3>
+            <p class="plan-tagline">Premium coverage, every corner</p>
+            <div class="plan-price">
+              <span class="price-amount">$109</span>
+              <span class="price-period">/mo</span>
+            </div>
+          </div>
+          <p class="plan-description">
+            The full smart-home experience. Maximum coverage throughout your home with advanced controls, security, and the kind of reliability that makes your internet invisible.
+          </p>
+          <ul class="plan-features" aria-label="Peak plan features">
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Maximum whole-home WiFi mesh
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Unlimited devices
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Advanced smart home &amp; automation
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Family controls &amp; content filtering
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Network security &amp; threat protection
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              24/7 concierge support
+            </li>
+          </ul>
+          <div class="plan-cta">
+            <a href="#check-address" class="btn btn-primary btn-full" data-plan-link="peak">Get Peak</a>
+          </div>
+        </article>
+
+        <!-- Plan 4: Summit Outdoors -->
+        <article class="plan-card plan-outdoors" role="listitem" data-plan="outdoors" aria-labelledby="plan-outdoors-name">
+          <div class="plan-tier-badge">Summit Outdoors</div>
+          <div class="plan-outdoors-badge" aria-label="Outdoor WiFi included">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M8 14L2 8C2 4.7 4.7 2 8 2C11.3 2 14 4.7 14 8L8 14Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            </svg>
+            Outdoor WiFi Included
+          </div>
+          <div class="plan-header">
+            <h3 class="plan-name" id="plan-outdoors-name">Summit Outdoors</h3>
+            <p class="plan-tagline">Your whole property, fully connected</p>
+            <div class="plan-price">
+              <span class="price-amount">$149</span>
+              <span class="price-period">/mo</span>
+            </div>
+          </div>
+          <p class="plan-description">
+            Everything in Peak, plus outdoor WiFi coverage for your deck, patio, yard, and outbuildings. Designed for larger properties where life doesn't stop at the back door.
+          </p>
+          <ul class="plan-features" aria-label="Summit Outdoors plan features">
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Everything in Peak, plus:
+            </li>
+            <li class="feature-highlight">
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Outdoor WiFi access points
+            </li>
+            <li class="feature-highlight">
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Coverage for guest houses &amp; barns
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Outdoor security camera support
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Smart irrigation &amp; property controls
+            </li>
+            <li>
+              <svg class="check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              White-glove installation
+            </li>
+          </ul>
+          <div class="plan-cta">
+            <a href="#check-address" class="btn btn-outdoors btn-full" data-plan-link="outdoors">Get Summit Outdoors</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ADDRESS CHECK (standalone section) ─────────────────────────────── -->
+  <section class="check-section" id="check-address" aria-labelledby="check-heading">
+    <div class="container">
+      <div class="check-inner">
+        <div class="section-header check-header">
+          <p class="section-eyebrow">Check Your Address</p>
+          <h2 id="check-heading" class="section-heading">Find your perfect plan</h2>
+          <p class="section-sub">Enter your address and we'll match you with the right experience tier for your home and property.</p>
+        </div>
+        <div class="check-search" role="search" aria-label="Find plan for your address">
+          <div class="search-input-wrap">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M10 11.5C11.933 11.5 13.5 9.933 13.5 8C13.5 6.067 11.933 4.5 10 4.5C8.067 4.5 6.5 6.067 6.5 8C6.5 9.933 8.067 11.5 10 11.5Z" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M10 11.5V17.5M7 15.5H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input
+              id="check-address-input"
+              type="text"
+              class="search-input search-input-light"
+              placeholder="Enter your address…"
+              autocomplete="off"
+              aria-autocomplete="list"
+              aria-controls="check-suggestions"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            />
+            <div id="check-suggestions" class="suggestions suggestions-light" role="listbox" aria-label="Address suggestions" hidden></div>
+          </div>
+          <button class="btn btn-primary btn-search" id="check-btn" type="button">
+            Find My Plan
+          </button>
+        </div>
+        <div class="check-result" id="check-result" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ───────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="logo logo-light" aria-label="Summit Internet home">
+          <svg class="logo-mark" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M20 2 L38 30 H2 Z" stroke="currentColor" stroke-width="2.5" fill="none"/>
+            <path d="M20 10 L31 30 H9 Z" fill="currentColor" opacity="0.25"/>
+          </svg>
+          <span class="logo-text">Summit</span>
+        </a>
+        <p>Connecting Teton County,<br/>one home at a time.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <div class="footer-col">
+          <h4>Plans</h4>
+          <a href="#plans">Basecamp</a>
+          <a href="#plans">Ridgeline</a>
+          <a href="#plans">Peak</a>
+          <a href="#plans">Summit Outdoors</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About Summit</a>
+          <a href="#">Our Network</a>
+          <a href="#">Careers</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">Help Center</a>
+          <a href="#">Account Login</a>
+          <a href="#">Report an Outage</a>
+          <a href="#">Equipment Return</a>
+        </div>
+      </nav>
+    </div>
+    <div class="footer-bottom container">
+      <p>&copy; 2025 Summit Internet. Serving Teton County, Wyoming.</p>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Broadband Facts</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
