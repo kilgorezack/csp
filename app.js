@@ -359,7 +359,7 @@ function buildPropertyChips(rec, parcel) {
       <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <path d="M8 14L2 8C2 4.7 4.7 2 8 2C11.3 2 14 4.7 14 8L8 14Z" stroke="currentColor" stroke-width="1.5"/>
       </svg>
-      Outdoor WiFi candidate
+      Outdoor Wi-Fi
     </span>`);
   }
 
