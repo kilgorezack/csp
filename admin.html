@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Summit Internet — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:       #0c1a2e;
+      --navy-mid:   #122340;
+      --sky:        #0ea5e9;
+      --sky-light:  #38bdf8;
+      --gold:       #f59e0b;
+      --pine:       #16a34a;
+      --slate-900:  #0f172a;
+      --slate-800:  #1e293b;
+      --slate-700:  #334155;
+      --slate-600:  #475569;
+      --slate-400:  #94a3b8;
+      --slate-200:  #e2e8f0;
+      --slate-100:  #f1f5f9;
+      --white:      #ffffff;
+      --font-sans:  'Inter', system-ui, sans-serif;
+      --font-serif: 'DM Serif Display', Georgia, serif;
+      --radius:     10px;
+    }
+
+    html { font-size: 16px; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--slate-900);
+      color: var(--white);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Login Screen ─────────────────────────────────────── */
+    .login-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .login-card {
+      background: var(--slate-800);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 24px 56px rgba(0,0,0,.4);
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: .625rem;
+      margin-bottom: 2rem;
+    }
+    .login-logo svg { color: var(--sky); }
+    .login-logo span {
+      font-family: var(--font-serif);
+      font-size: 1.375rem;
+      color: var(--white);
+    }
+    .login-logo .admin-tag {
+      font-family: var(--font-sans);
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--sky);
+      background: rgba(14,165,233,.15);
+      border: 1px solid rgba(14,165,233,.3);
+      padding: .15rem .5rem;
+      border-radius: 4px;
+    }
+
+    .login-card h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: .375rem;
+    }
+    .login-card p {
+      font-size: .875rem;
+      color: var(--slate-400);
+      margin-bottom: 1.75rem;
+    }
+
+    .field { display: flex; flex-direction: column; gap: .5rem; margin-bottom: 1.25rem; }
+    .field label { font-size: .8125rem; font-weight: 600; color: var(--slate-400); }
+    .field input {
+      background: var(--slate-700);
+      border: 1.5px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: .9375rem;
+      padding: .75rem 1rem;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .field input:focus { border-color: var(--sky); }
+
+    .login-btn {
+      width: 100%;
+      background: var(--sky);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-size: .9375rem;
+      font-weight: 600;
+      padding: .8rem;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .login-btn:hover { opacity: .88; }
+    .login-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    .login-error {
+      margin-top: 1rem;
+      background: rgba(220,38,38,.15);
+      border: 1px solid rgba(220,38,38,.35);
+      color: #fca5a5;
+      border-radius: 8px;
+      padding: .75rem 1rem;
+      font-size: .875rem;
+      display: none;
+    }
+    .login-error.show { display: block; }
+
+    /* ── Dashboard ────────────────────────────────────────── */
+    .dashboard { display: none; flex-direction: column; min-height: 100vh; }
+    .dashboard.visible { display: flex; }
+
+    .dash-header {
+      background: var(--navy);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .dash-logo {
+      display: flex;
+      align-items: center;
+      gap: .625rem;
+    }
+    .dash-logo svg { color: var(--sky); }
+    .dash-logo-text {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+    }
+    .dash-tag {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--sky);
+      background: rgba(14,165,233,.15);
+      border: 1px solid rgba(14,165,233,.3);
+      padding: .15rem .5rem;
+      border-radius: 4px;
+    }
+
+    .dash-actions { display: flex; align-items: center; gap: .75rem; }
+
+    .btn-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .45rem 1rem;
+      border-radius: 7px;
+      font-family: var(--font-sans);
+      font-size: .8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity .15s;
+    }
+    .btn-ghost {
+      background: rgba(255,255,255,.07);
+      color: var(--slate-400);
+    }
+    .btn-ghost:hover { opacity: .75; }
+
+    .dash-body {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1200px;
+      margin-inline: auto;
+      width: 100%;
+    }
+
+    .dash-title {
+      font-family: var(--font-serif);
+      font-size: 1.75rem;
+      margin-bottom: .375rem;
+    }
+    .dash-subtitle {
+      font-size: .875rem;
+      color: var(--slate-400);
+      margin-bottom: 2rem;
+    }
+
+    /* ── Stat Cards ───────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--slate-800);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+    }
+    .stat-label {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--slate-400);
+      margin-bottom: .5rem;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .stat-value.sky    { color: var(--sky-light); }
+    .stat-value.gold   { color: var(--gold); }
+    .stat-value.green  { color: #4ade80; }
+    .stat-value.purple { color: #a78bfa; }
+    .stat-value.orange { color: #fb923c; }
+
+    /* ── Plan Bar ─────────────────────────────────────────── */
+    .plan-breakdown {
+      background: var(--slate-800);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .section-label {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--slate-400);
+      margin-bottom: 1rem;
+    }
+    .plan-bars { display: flex; flex-direction: column; gap: .75rem; }
+    .plan-bar-row { display: flex; align-items: center; gap: .75rem; }
+    .plan-bar-name {
+      width: 140px;
+      font-size: .875rem;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    .plan-bar-track {
+      flex: 1;
+      height: 8px;
+      background: rgba(255,255,255,.08);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .plan-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width .5s ease;
+    }
+    .plan-bar-count {
+      width: 40px;
+      text-align: right;
+      font-size: .8125rem;
+      font-weight: 600;
+      color: var(--slate-400);
+      flex-shrink: 0;
+    }
+
+    /* ── Table ────────────────────────────────────────────── */
+    .table-wrap {
+      background: var(--slate-800);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .875rem;
+    }
+    thead th {
+      padding: .75rem 1.25rem;
+      text-align: left;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--slate-400);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      transition: background .1s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,.03); }
+    tbody td {
+      padding: .75rem 1.25rem;
+      color: var(--slate-200);
+      vertical-align: middle;
+    }
+    td.address-cell {
+      font-weight: 500;
+      color: var(--white);
+      max-width: 320px;
+    }
+    td.ts-cell {
+      color: var(--slate-400);
+      font-size: .8125rem;
+      white-space: nowrap;
+    }
+
+    .plan-badge {
+      display: inline-block;
+      padding: .2rem .625rem;
+      border-radius: 100px;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+    .plan-badge.basecamp  { background: rgba(14,165,233,.15); color: #7dd3fc; }
+    .plan-badge.ridgeline { background: rgba(245,158,11,.15); color: #fcd34d; }
+    .plan-badge.peak      { background: rgba(167,139,250,.15); color: #c4b5fd; }
+    .plan-badge.outdoors  { background: rgba(22,163,74,.15); color: #86efac; }
+    .plan-badge.unknown   { background: rgba(255,255,255,.08); color: var(--slate-400); }
+
+    .acreage-cell { color: var(--slate-400); font-size: .8125rem; }
+
+    .empty-state {
+      padding: 4rem 2rem;
+      text-align: center;
+      color: var(--slate-400);
+    }
+    .empty-state p { font-size: .9375rem; }
+
+    /* ── Loading ──────────────────────────────────────────── */
+    .loading-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .75rem;
+      padding: 3rem;
+      color: var(--slate-400);
+      font-size: .875rem;
+    }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid rgba(255,255,255,.15);
+      border-top-color: var(--sky);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- ── Login ──────────────────────────────────────────────────────────── -->
+  <div class="login-wrap" id="login-screen">
+    <div class="login-card">
+      <div class="login-logo">
+        <svg width="24" height="20" viewBox="0 0 40 32" fill="none">
+          <path d="M20 2 L38 30 H2 Z" stroke="currentColor" stroke-width="2.5" fill="none"/>
+          <path d="M20 10 L31 30 H9 Z" fill="currentColor" opacity="0.3"/>
+        </svg>
+        <span>Summit</span>
+        <span class="admin-tag">Admin</span>
+      </div>
+      <h1>Sign in</h1>
+      <p>Enter the admin password to access the dashboard.</p>
+      <form id="login-form" autocomplete="off">
+        <div class="field">
+          <label for="pw-input">Password</label>
+          <input id="pw-input" type="password" placeholder="••••••••" autocomplete="current-password" required />
+        </div>
+        <button class="login-btn" type="submit" id="login-btn">Sign in</button>
+      </form>
+      <div class="login-error" id="login-error">Incorrect password. Try again.</div>
+    </div>
+  </div>
+
+  <!-- ── Dashboard ──────────────────────────────────────────────────────── -->
+  <div class="dashboard" id="dashboard">
+
+    <header class="dash-header">
+      <div class="dash-logo">
+        <svg width="22" height="18" viewBox="0 0 40 32" fill="none">
+          <path d="M20 2 L38 30 H2 Z" stroke="currentColor" stroke-width="2.5" fill="none"/>
+          <path d="M20 10 L31 30 H9 Z" fill="currentColor" opacity="0.3"/>
+        </svg>
+        <span class="dash-logo-text">Summit Internet</span>
+        <span class="dash-tag">Admin</span>
+      </div>
+      <div class="dash-actions">
+        <button class="btn-sm btn-ghost" id="refresh-btn">↻ Refresh</button>
+        <button class="btn-sm btn-ghost" id="logout-btn">Sign out</button>
+      </div>
+    </header>
+
+    <main class="dash-body">
+      <h1 class="dash-title">Lookup Dashboard</h1>
+      <p class="dash-subtitle" id="dash-subtitle">Loading…</p>
+
+      <!-- Stats -->
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Lookups</div>
+          <div class="stat-value sky" id="stat-total">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Basecamp</div>
+          <div class="stat-value sky" id="stat-basecamp">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ridgeline</div>
+          <div class="stat-value gold" id="stat-ridgeline">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Peak</div>
+          <div class="stat-value purple" id="stat-peak">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Summit Outdoors</div>
+          <div class="stat-value green" id="stat-outdoors">—</div>
+        </div>
+      </div>
+
+      <!-- Plan breakdown bars -->
+      <div class="plan-breakdown" id="plan-breakdown" style="display:none">
+        <div class="section-label">Plan Distribution</div>
+        <div class="plan-bars" id="plan-bars"></div>
+      </div>
+
+      <!-- Lookups table -->
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="section-label" style="margin:0">Recent Lookups</div>
+        </div>
+        <div id="table-body">
+          <div class="loading-wrap"><div class="spinner"></div> Loading data…</div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    const PLAN_LABELS = {
+      basecamp: 'Basecamp',
+      ridgeline: 'Ridgeline',
+      peak: 'Peak',
+      outdoors: 'Summit Outdoors',
+    };
+
+    const PLAN_COLORS = {
+      basecamp:  '#38bdf8',
+      ridgeline: '#fcd34d',
+      peak:      '#c4b5fd',
+      outdoors:  '#86efac',
+    };
+
+    // ── Auth ─────────────────────────────────────────────────────────────
+    let currentPassword = sessionStorage.getItem('admin_pw') || '';
+
+    if (currentPassword) {
+      showDashboard();
+      loadData();
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pw  = document.getElementById('pw-input').value.trim();
+      const btn = document.getElementById('login-btn');
+      btn.disabled = true;
+      btn.textContent = 'Signing in…';
+
+      const ok = await tryLoad(pw);
+      if (ok) {
+        currentPassword = pw;
+        sessionStorage.setItem('admin_pw', pw);
+        showDashboard();
+      } else {
+        document.getElementById('login-error').classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'Sign in';
+      }
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      sessionStorage.removeItem('admin_pw');
+      location.reload();
+    });
+
+    document.getElementById('refresh-btn').addEventListener('click', loadData);
+
+    function showDashboard() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard').classList.add('visible');
+    }
+
+    // ── Data ─────────────────────────────────────────────────────────────
+    async function tryLoad(pw) {
+      try {
+        const res = await fetch(`/api/admin-data?pw=${encodeURIComponent(pw)}`);
+        if (!res.ok) return false;
+        const data = await res.json();
+        render(data);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    async function loadData() {
+      document.getElementById('table-body').innerHTML =
+        '<div class="loading-wrap"><div class="spinner"></div> Loading data…</div>';
+      await tryLoad(currentPassword);
+    }
+
+    // ── Render ────────────────────────────────────────────────────────────
+    function render({ lookups, total }) {
+      // Subtitle
+      document.getElementById('dash-subtitle').textContent =
+        `${total.toLocaleString()} total lookup${total !== 1 ? 's' : ''} · last updated ${new Date().toLocaleTimeString()}`;
+
+      // Plan counts
+      const counts = { basecamp: 0, ridgeline: 0, peak: 0, outdoors: 0 };
+      for (const l of lookups) {
+        if (l.plan && counts[l.plan] !== undefined) counts[l.plan]++;
+      }
+
+      document.getElementById('stat-total').textContent    = total.toLocaleString();
+      document.getElementById('stat-basecamp').textContent  = counts.basecamp;
+      document.getElementById('stat-ridgeline').textContent = counts.ridgeline;
+      document.getElementById('stat-peak').textContent      = counts.peak;
+      document.getElementById('stat-outdoors').textContent  = counts.outdoors;
+
+      // Plan bars
+      if (total > 0) {
+        document.getElementById('plan-breakdown').style.display = '';
+        const barsEl = document.getElementById('plan-bars');
+        barsEl.innerHTML = Object.entries(counts)
+          .sort((a, b) => b[1] - a[1])
+          .map(([plan, count]) => {
+            const pct = total > 0 ? (count / total * 100).toFixed(1) : 0;
+            return `
+              <div class="plan-bar-row">
+                <div class="plan-bar-name">${PLAN_LABELS[plan]}</div>
+                <div class="plan-bar-track">
+                  <div class="plan-bar-fill" style="width:${pct}%;background:${PLAN_COLORS[plan]}"></div>
+                </div>
+                <div class="plan-bar-count">${count}</div>
+              </div>`;
+          }).join('');
+      }
+
+      // Table
+      if (lookups.length === 0) {
+        document.getElementById('table-body').innerHTML =
+          '<div class="empty-state"><p>No lookups recorded yet. Address searches will appear here.</p></div>';
+        return;
+      }
+
+      const rows = lookups.map(l => {
+        const plan    = l.plan || 'unknown';
+        const label   = PLAN_LABELS[plan] || 'Unknown';
+        const acres   = l.acreage != null
+          ? (l.acreage < 0.1
+              ? `${Math.round(l.acreage * 43560).toLocaleString()} sq ft`
+              : `${Number(l.acreage).toFixed(2)} ac`)
+          : '—';
+        const ts      = l.ts ? new Date(l.ts).toLocaleString() : '—';
+        const acct    = l.acctType || '—';
+
+        return `<tr>
+          <td class="address-cell">${escHtml(l.address)}</td>
+          <td><span class="plan-badge ${plan}">${label}</span></td>
+          <td class="acreage-cell">${acres}</td>
+          <td class="acreage-cell">${escHtml(acct)}</td>
+          <td class="ts-cell">${ts}</td>
+        </tr>`;
+      }).join('');
+
+      document.getElementById('table-body').innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Address</th>
+              <th>Plan</th>
+              <th>Acreage</th>
+              <th>Property Type</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    }
+
+    function escHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
+
+</body>
+</html>
