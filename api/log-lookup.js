@@ -1,6 +1,6 @@
 /**
  * POST /api/log-lookup
- * Logs an address lookup to Vercel KV for the admin dashboard.
+ * Logs an address lookup to Supabase for the admin dashboard.
  * Fails silently — never returns an error to the client.
  */
 export default async function handler(req, res) {
@@ -12,33 +12,28 @@ export default async function handler(req, res) {
     const { address, plan, acreage, acctType } = req.body;
     if (!address) return res.status(400).json({ error: 'address required' });
 
-    const entry = JSON.stringify({
-      ts:       Date.now(),
-      address:  String(address).slice(0, 200),
-      plan:     plan     || null,
-      acreage:  acreage  != null ? Number(acreage) : null,
-      acctType: acctType || null,
-    });
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 
-    const kvUrl   = process.env.UPSTASH_REDIS_REST_URL;
-    const kvToken = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-    if (!kvUrl || !kvToken) {
-      // KV not configured — log locally and return ok so the UI never breaks
-      console.log('[lookup]', entry);
+    if (!supabaseUrl || !supabaseKey) {
+      console.log('[lookup]', { address, plan, acreage, acctType });
       return res.status(200).json({ ok: true });
     }
 
-    // Push to front of list (newest first), keep last 1000 entries
-    await fetch(`${kvUrl}/lpush/lookups`, {
-      method:  'POST',
-      headers: { Authorization: `Bearer ${kvToken}`, 'Content-Type': 'application/json' },
-      body:    JSON.stringify([entry]),
-    });
-
-    await fetch(`${kvUrl}/ltrim/lookups/0/999`, {
-      method:  'POST',
-      headers: { Authorization: `Bearer ${kvToken}` },
+    await fetch(`${supabaseUrl}/rest/v1/lookups`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${supabaseKey}`,
+        'apikey':        supabaseKey,
+        'Content-Type':  'application/json',
+        'Prefer':        'return=minimal',
+      },
+      body: JSON.stringify({
+        address:   String(address).slice(0, 200),
+        plan:      plan     || null,
+        acreage:   acreage  != null ? Number(acreage) : null,
+        acct_type: acctType || null,
+      }),
     });
 
     res.status(200).json({ ok: true });
