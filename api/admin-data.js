@@ -34,7 +34,10 @@ export default async function handler(req, res) {
     );
 
     const rows = await sbRes.json();
-    if (!Array.isArray(rows)) throw new Error('Unexpected Supabase response');
+    if (!Array.isArray(rows)) {
+      const msg = rows?.message || rows?.error || JSON.stringify(rows);
+      throw new Error(`Supabase: ${msg}`);
+    }
 
     // Normalize to the shape the dashboard expects
     const lookups = rows.map(r => ({
