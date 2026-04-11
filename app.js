@@ -508,6 +508,7 @@ function init() {
     new AddressSearch(heroInput, heroSuggestions, heroBtn, (item, parcel, rec, rawQuery) => {
       renderHeroResult(item, parcel, rec, rawQuery);
       if (rec) highlightRecommendedPlan(rec.plan.id);
+      if (item) pinAddressOnMap(item);
     });
   }
 
@@ -520,6 +521,7 @@ function init() {
     new AddressSearch(checkInput, checkSuggestions, checkBtn, (item, parcel, rec, rawQuery) => {
       renderInlineResult(item, parcel, rec, rawQuery);
       if (rec) highlightRecommendedPlan(rec.plan.id);
+      if (item) pinAddressOnMap(item);
     });
   }
 
@@ -694,3 +696,124 @@ class AiModal {
 }
 
 document.addEventListener('DOMContentLoaded', () => new AiModal());
+
+// ── Coverage Map ───────────────────────────────────────────────────────────
+
+let coverageMap     = null;
+let coverageMarker  = null;
+
+async function initCoverageMap() {
+  const mapEl = document.getElementById('coverage-map');
+  if (!mapEl || typeof mapkit === 'undefined') return;
+
+  // Fetch MapKit auth token
+  let token;
+  try {
+    const res = await fetch('/api/mapkit-token');
+    if (!res.ok) throw new Error('token fetch failed');
+    ({ token } = await res.json());
+  } catch (err) {
+    console.warn('MapKit token unavailable — map disabled.', err);
+    mapEl.innerHTML = '<div class="coverage-map-unavailable">Map unavailable</div>';
+    return;
+  }
+
+  mapkit.init({ authorizationCallback: (done) => done(token) });
+
+  // Create the map
+  coverageMap = new mapkit.Map('coverage-map', {
+    mapType:              mapkit.Map.MapTypes.Hybrid,
+    showsCompass:         mapkit.FeatureVisibility.Hidden,
+    showsZoomControl:     false,
+    showsMapTypeControl:  false,
+    showsScale:           mapkit.FeatureVisibility.Hidden,
+    padding:              new mapkit.Padding(0, 0, 0, 0),
+  });
+
+  // Center on Teton County
+  const center = new mapkit.Coordinate(43.49, -110.76);
+  const span   = new mapkit.CoordinateSpan(0.96, 1.02);
+  coverageMap.setRegionAnimated(new mapkit.CoordinateRegion(center, span), false);
+
+  // Load and overlay the county boundary
+  try {
+    const geoRes  = await fetch('/data/teton-county.geojson');
+    const geoData = await geoRes.json();
+
+    mapkit.importGeoJSON(geoData, {
+      styleForOverlay(overlay) {
+        overlay.style = new mapkit.Style({
+          fillColor:    '#0ea5e9',
+          fillOpacity:  0.12,
+          strokeColor:  '#0ea5e9',
+          strokeOpacity: 0.55,
+          lineWidth:    2,
+        });
+        return overlay;
+      },
+      geoJSONDidComplete(result) {
+        coverageMap.addItems(result);
+      },
+      geoJSONDidError(err) {
+        console.warn('GeoJSON overlay error:', err);
+      },
+    });
+  } catch (err) {
+    console.warn('County boundary load failed:', err);
+  }
+}
+
+/**
+ * Drop (or move) a pin on the coverage map for the selected address.
+ * Called from both AddressSearch handlers whenever an address is selected.
+ */
+function pinAddressOnMap(addressItem) {
+  if (!coverageMap || !addressItem?.t) return;
+
+  const [lng, lat] = addressItem.t;
+  const coord = new mapkit.Coordinate(lat, lng);
+
+  // Remove previous marker
+  if (coverageMarker) {
+    coverageMap.removeAnnotation(coverageMarker);
+    coverageMarker = null;
+  }
+
+  coverageMarker = new mapkit.MarkerAnnotation(coord, {
+    color:     '#0ea5e9',
+    glyphText: '⬡',
+    title:     addressItem.a.split(',')[0],
+  });
+  coverageMap.addAnnotation(coverageMarker);
+
+  // Pan to the pin (zoom in a bit from full-county view)
+  const pinSpan = new mapkit.CoordinateSpan(0.06, 0.08);
+  coverageMap.setRegionAnimated(new mapkit.CoordinateRegion(coord, pinSpan));
+
+  // Update the floating label
+  const label    = document.getElementById('coverage-pin-label');
+  const labelTxt = document.getElementById('coverage-pin-text');
+  if (label && labelTxt) {
+    labelTxt.textContent = addressItem.a.split(',')[0];
+    label.hidden = false;
+  }
+}
+
+// Init map once MapKit script has loaded
+if (typeof mapkit !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', initCoverageMap);
+} else {
+  window.addEventListener('load', () => {
+    // MapKit loads async — poll briefly then give up
+    let attempts = 0;
+    const check = setInterval(() => {
+      attempts++;
+      if (typeof mapkit !== 'undefined') {
+        clearInterval(check);
+        initCoverageMap();
+      } else if (attempts > 20) {
+        clearInterval(check);
+      }
+    }, 250);
+  });
+}
