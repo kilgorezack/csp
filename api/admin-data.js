@@ -7,11 +7,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const adminPassword = process.env.ADMIN_PASSWORD;
+  const adminPassword = (process.env.ADMIN_PASSWORD || '').trim();
   if (!adminPassword) {
     return res.status(503).json({ error: 'Admin not configured' });
   }
-  if (req.query.pw !== adminPassword) {
+  if ((req.query.pw || '').trim() !== adminPassword) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
