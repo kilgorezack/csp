@@ -737,7 +737,7 @@ async function initCoverageMap() {
 
   // Load and overlay the county boundary
   try {
-    const geoRes  = await fetch('/data/teton-county.geojson');
+    const geoRes  = await fetch('/data/coverage-boundary.geojson');
     const geoData = await geoRes.json();
 
     mapkit.importGeoJSON(geoData, {

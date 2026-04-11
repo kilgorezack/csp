@@ -4,3 +4,7 @@ node_modules/
 tmp_kml/
 .claude/worktrees/
 .vercel
+*.p8
+.env
+generate-mapkit-token.js
+generate-coverage.js
