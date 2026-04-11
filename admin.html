@@ -500,8 +500,14 @@
     let currentPassword = sessionStorage.getItem('admin_pw') || '';
 
     if (currentPassword) {
-      showDashboard();
-      loadData();
+      tryLoad(currentPassword).then(result => {
+        if (result.ok) {
+          showDashboard();
+        } else {
+          sessionStorage.removeItem('admin_pw');
+          currentPassword = '';
+        }
+      });
     }
 
     document.getElementById('login-form').addEventListener('submit', async (e) => {
@@ -511,13 +517,15 @@
       btn.disabled = true;
       btn.textContent = 'Signing in…';
 
-      const ok = await tryLoad(pw);
-      if (ok) {
+      const result = await tryLoad(pw);
+      if (result.ok) {
         currentPassword = pw;
         sessionStorage.setItem('admin_pw', pw);
         showDashboard();
       } else {
-        document.getElementById('login-error').classList.add('show');
+        const errEl = document.getElementById('login-error');
+        errEl.textContent = result.message;
+        errEl.classList.add('show');
         btn.disabled = false;
         btn.textContent = 'Sign in';
       }
@@ -539,19 +547,25 @@
     async function tryLoad(pw) {
       try {
         const res = await fetch(`/api/admin-data?pw=${encodeURIComponent(pw)}`);
-        if (!res.ok) return false;
-        const data = await res.json();
-        render(data);
-        return true;
-      } catch {
-        return false;
+        const body = await res.json().catch(() => ({}));
+        if (res.status === 401) return { ok: false, message: 'Incorrect password. Try again.' };
+        if (res.status === 503) return { ok: false, message: 'Admin not configured — check ADMIN_PASSWORD env var.' };
+        if (!res.ok)            return { ok: false, message: `Server error (${res.status}): ${body.error || 'unknown'}` };
+        render(body);
+        return { ok: true };
+      } catch (err) {
+        return { ok: false, message: `Network error: ${err.message}` };
       }
     }
 
     async function loadData() {
       document.getElementById('table-body').innerHTML =
         '<div class="loading-wrap"><div class="spinner"></div> Loading data…</div>';
-      await tryLoad(currentPassword);
+      const result = await tryLoad(currentPassword);
+      if (!result.ok) {
+        document.getElementById('table-body').innerHTML =
+          `<div class="empty-state"><p>Error: ${result.message}</p></div>`;
+      }
     }
 
     // ── Render ────────────────────────────────────────────────────────────
