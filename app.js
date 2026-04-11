@@ -741,15 +741,14 @@ async function initCoverageMap() {
     const geoData = await geoRes.json();
 
     mapkit.importGeoJSON(geoData, {
-      styleForOverlay(overlay) {
-        overlay.style = new mapkit.Style({
-          fillColor:    '#0ea5e9',
-          fillOpacity:  0.12,
-          strokeColor:  '#0ea5e9',
-          strokeOpacity: 0.55,
-          lineWidth:    2,
+      styleForOverlay() {
+        return new mapkit.Style({
+          fillColor:     '#0ea5e9',
+          fillOpacity:   0.22,
+          strokeColor:   '#38bdf8',
+          strokeOpacity: 0.85,
+          lineWidth:     2.5,
         });
-        return overlay;
       },
       geoJSONDidComplete(result) {
         coverageMap.addItems(result);
